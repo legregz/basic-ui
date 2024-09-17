@@ -1,0 +1,13 @@
+{
+    "red":"f00",
+    "green":"0f0",
+    "blue":"00f",
+    "yellow":"f00",
+    "cyan":"0ff",
+    "pink":"f0f",
+    "left":"<-",
+    "right":"->",
+    "top":"</",
+    "bottom":"/>",
+    "center":"<->"
+}
