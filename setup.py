@@ -7,4 +7,5 @@ setup(
     install_require=[
         'pygame>=2.6.0'
     ],
+    long_description=open('README.md').read()
 )
