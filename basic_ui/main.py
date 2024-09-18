@@ -1,20 +1,26 @@
-import pygame
+import pygame, json, os
 pygame.init()
 
-#ouvre le fichier des paramètres par défaut
-file = open("default.json")
-default = eval(file.read())
-file.close()
+#ouvre le fichier des paramètres par défaut, si il ne se trouve pas dans le répertoire du projet, il est importé depuis le répertoire 'config' du package
+with open("config/defaults.json") as f:
+    defaults = json.load(f)
+
 #ouvre le fichier des paramètres requis pour chaque type de composant
-file = open("requirements.json")
-requirements = eval(file.read())
-file.close()
+with open("config/requirements.json") as f:
+    requirements = json.load(f)
+
 #ouvre le fichier des alias
-file = open("aliases.json")
-aliases = eval(file.read())
-file.close()
+with open("config/aliases.json") as f:
+    aliases = json.load(f)
 
 settingsGroups, components, divs = {}, {}, {}
+
+def importConfigFiles():
+    if os.path.exists("config") == False:
+        #os.makedirs("config")
+        print("créer config directory")
+    else:
+        print("already exist")
 
 def convertRect(position, size, containerPosition, containerSize):
     """convertRect : fonction permettant de convertir une position et une size depuis le format utilisé dans la page json en position et size en pixels
@@ -69,9 +75,8 @@ def convertColor(color):
 
 def setComponents(componentsFileName):
     #ouvrir le fichier contenant les composants
-    file = open(componentsFileName)
-    componentsDict = eval(file.read())
-    file.close()
+    with open(componentsFileName) as f:
+        componentsDict = json.load(f)
 
     #pour chaque nom de composant parmis ceux dans le fichier
     for componentName in componentsDict.keys():
@@ -151,7 +156,7 @@ class Page:
         #pour tout les paramêtres requis mais vides, on applique la valeur par défaut
         for setting in requirements[componentClassName]:
             if not setting in self.settings.keys():
-                self.settings[setting] = default[setting]
+                self.settings[setting] = defaults[setting]
 
     def setEnvironnement(self, size):
         self.containerSize = size
