@@ -2,9 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='basic_ui',
-    version='0.4.7',
+    version='0.1',
     packages=find_packages(),
     include_package_data=True,
+    package_data={
+        # Inclure explicitement les fichiers data dans mon_package
+        'basic_ui': ['config/*.json'],
+    },
     install_require=[
         'pygame>=2.6.0'
     ],
