@@ -15,14 +15,21 @@ aliases = eval(file.read())
 file.close()
 
 settingsGroups, components, divs = {}, {}, {}
-    
+
 def convertRect(position, size, containerPosition, containerSize):
+    """convertRect : fonction permettant de convertir une position et une size depuis le format utilisé dans la page json en position et size en pixels
+    args:
+        position : list
+        size : list
+        containerPosition : list (in pixels)
+        containerSize : list (in pixels)"""
     position = convertPosition(position, containerPosition, containerSize)
     size = convertSize(size, containerSize)
 
     return [position[0], position[1], size[0], size[1]]
 
 def convertPosition(position, containerPosition, containerSize):
+    """convertPosition : fonction permettant de convertir une position depuis le format utilisé dans la page json en position en pixels"""
     for i in range(2):
         if position[i].endswith("%"):
             position[i] = (containerPosition[i] + containerSize[i] / 100) * int(position[i][0:-1])
@@ -32,6 +39,7 @@ def convertPosition(position, containerPosition, containerSize):
     return position
 
 def convertSize(size, containerSize):
+    """convertSize : fonction permettant de convertir une size depuis le format utilisé dans la page json en size en pixels"""
     for i in range(2):
         if size[i].endswith("%"):
             size[i] = containerSize[i] / 100 * int(size[i][0:-1])
@@ -41,6 +49,7 @@ def convertSize(size, containerSize):
     return size
 
 def convertColor(color):
+    """convertColor : fonction permettant de convertir une color depuis le format utilisé dans la page json en color RVB"""
     if color in aliases.keys():
         color = aliases[color]
 
