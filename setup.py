@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='basic_ui',
-    version='0.4.6',
+    version='0.4.7',
     packages=find_packages(),
+    include_package_data=True,
     install_require=[
         'pygame>=2.6.0'
     ],
