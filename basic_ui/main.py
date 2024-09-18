@@ -29,7 +29,11 @@ def convertRect(position, size, containerPosition, containerSize):
     return [position[0], position[1], size[0], size[1]]
 
 def convertPosition(position, containerPosition, containerSize):
-    """convertPosition : fonction permettant de convertir une position depuis le format utilisé dans la page json en position en pixels"""
+    """convertPosition : fonction permettant de convertir une position depuis le format utilisé dans la page json en position en pixels
+    args:
+        position : list
+        containerPosition : list (in pixels)
+        containerSize : list (in pixels)"""
     for i in range(2):
         if position[i].endswith("%"):
             position[i] = (containerPosition[i] + containerSize[i] / 100) * int(position[i][0:-1])
