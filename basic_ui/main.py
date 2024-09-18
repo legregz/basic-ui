@@ -43,7 +43,10 @@ def convertPosition(position, containerPosition, containerSize):
     return position
 
 def convertSize(size, containerSize):
-    """convertSize : fonction permettant de convertir une size depuis le format utilisé dans la page json en size en pixels"""
+    """convertSize : fonction permettant de convertir une size depuis le format utilisé dans la page json en size en pixels
+    args:
+        size : list
+        containerSize : list (in pixels)"""
     for i in range(2):
         if size[i].endswith("%"):
             size[i] = containerSize[i] / 100 * int(size[i][0:-1])
