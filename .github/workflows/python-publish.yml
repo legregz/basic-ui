@@ -29,5 +29,5 @@ jobs:
       - name: Publish package
         env:
             TWINE_USERNAME: __token__
-            TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+            TWINE_PASSWORD: ${{ secrets.PIP_KEY }}
         run: twine upload dist/*
