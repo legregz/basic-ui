@@ -6,7 +6,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        # Inclure explicitement les fichiers data dans mon_package
         'basic_ui': ['config/*.json'],
     },
     install_require=[
