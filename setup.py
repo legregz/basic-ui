@@ -4,7 +4,6 @@ setup(
     name='basic_ui',
     version='0.4.8',
     packages=find_packages(),
-    include_package_data=True,
     package_data={
         'basic_ui': ['config/*.json'],
     },

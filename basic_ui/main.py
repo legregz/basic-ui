@@ -1,26 +1,42 @@
-import pygame, json, os
+import pygame, json, os, importlib_resources
 pygame.init()
 
-#ouvre le fichier des paramètres par défaut, si il ne se trouve pas dans le répertoire du projet, il est importé depuis le répertoire 'config' du package
-with open("config/defaults.json") as f:
-    defaults = json.load(f)
+os.chdir(".")
 
-#ouvre le fichier des paramètres requis pour chaque type de composant
-with open("config/requirements.json") as f:
-    requirements = json.load(f)
-
-#ouvre le fichier des alias
-with open("config/aliases.json") as f:
-    aliases = json.load(f)
-
-settingsGroups, components, divs = {}, {}, {}
+global defaults, aliases, requirements
 
 def importConfigFiles():
+    global defaults, aliases, requirements
+
+    #si le répertoire 'config' n'existe pas, il est créé
     if os.path.exists("config") == False:
-        #os.makedirs("config")
-        print("créer config directory")
-    else:
-        print("already exist")
+        os.makedirs("config")
+
+    #ouvre le fichier des paramètres par défaut, si il ne se trouve pas dans le répertoire du projet, il est importé depuis le répertoire 'config' du package
+    try:
+        with open("config/defaults.json") as f:
+            defaults = json.load(f)
+    except Exception:
+        with importlib_resources.open_text("basic_ui", "config/defaults.json") as f:
+            defaults = json.load(f)
+
+        with open("config/defaults.json", "w") as f:
+            f.write(json.dumps(defaults, indent = 4))
+
+    #ouvre le fichier des paramètres requis pour chaque type de composant
+    with importlib_resources.open_text("basic_ui", "config/requirements.json") as f:
+        requirements = json.load(f)
+
+    #ouvre le fichier des alias
+    try:
+        with open("config/aliases.json") as f:
+            aliases = json.load(f)
+    except Exception:
+        with importlib_resources.open_text("basic_ui", "config/aliases.json") as f:
+            aliases = json.load(f)
+
+        with open("config/aliases.json", "w") as f:
+            f.write(json.dumps(aliases, indent = 4))
 
 def convertRect(position, size, containerPosition, containerSize):
     """convertRect : fonction permettant de convertir une position et une size depuis le format utilisé dans la page json en position et size en pixels
@@ -72,6 +88,8 @@ def convertColor(color):
         color = color[0] * 2 + color[1] * 2 + color[2] * 2
 
     return [int(f"0x{color[0:2]}", 16), int(f"0x{color[2:4]}", 16), int(f"0x{color[4:6]}", 16)]
+
+settingsGroups, components, divs = {}, {}, {}
 
 def setComponents(componentsFileName):
     #ouvrir le fichier contenant les composants

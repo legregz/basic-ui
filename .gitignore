@@ -1,2 +1,4 @@
-*test.py
-*test.json
+test
+dist
+build
+basic_ui.egg-info
