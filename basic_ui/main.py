@@ -91,30 +91,28 @@ def convertColor(color):
 
 settingsGroups, components, divs = {}, {}, {}
 
-def setComponents(componentsFileName):
+def setElements(elementsFileName):
     #ouvrir le fichier contenant les composants
-    with open(componentsFileName) as f:
-        componentsDict = json.load(f)
+    with open(elementsFileName) as f:
+        elements = json.load(f)
 
-    #pour chaque nom de composant parmis ceux dans le fichier
-    for componentName in componentsDict.keys():
+    #pour chaque nom de élément parmis ceux dans le fichier
+    for elementName in elements.keys():
         #pour chaque élément contenu dans le nom du composant
-        for componentClassName in componentsDict[componentName].keys():
+        for elementClassName in elements[elementName].keys():
             try:
                 #vérifie si l'élément est un composant
-                eval(componentClassName)
+                eval(elementClassName)
             except:
-                #test si l'élément est une div
-                if componentClassName in componentsDict.keys():
-                    divs[componentName] = componentsDict[componentName]
+                #sinon test si l'élément est une div. si oui, ajoute l'élément à la liste des divs
+                if elementClassName in elements.keys():
+                    divs[elementName] = elements[elementName]
                 #ou un groupe de paramètres
                 else:
-                    settingsGroups[componentName] = componentsDict[componentName]
+                    settingsGroups[elementName] = elements[elementName]
             else:
-                components[componentName] = createComponent(componentClassName, componentsDict[componentName][componentClassName])
-
-def createComponent(name, settings):
-    return eval(f"{name}({settings})")
+                #sinon créé un composant en évaluant la classe définit par elementClassName
+                components[elementName] = eval(f"{elementClassName}({elements[elementName][elementClassName]})")
 
 class Page:
     def __init__(self, screen, pageFileName):
@@ -145,11 +143,11 @@ class Page:
                 #si oui, setup de chaque composant
                 self.components[componentName] = components[componentName]
                 self.components[componentName].setup(data[componentName])
-                self.components[componentName].setEnvironnement(size)
+                self.components[componentName].setContainer(size)
 
     def globalSetup(self, componentClassName, additionalSettings):
         if self.settings["settings"]:
-            #si le paramêtre 'setting' est un groupe de paramêtres, on ajoute chacun des paramêtres aux paramêtres du composant
+            #si le paramêtre 'settings' est un groupe de paramêtres, on ajoute chacun des paramêtres aux paramêtres du composant
             if type(self.settings["settings"]) == str:
                 for key in settingsGroups[self.settings["settings"]].keys():
                     try:
@@ -157,7 +155,7 @@ class Page:
                     except:
                         self.settings[key] = settingsGroups[self.settings["settings"]][key]
 
-            #si le paramêtre 'setting' est une liste de groupe de paramêtre, on ajoute chacun des paramêtres de chaque groupe au paramêtres du composant
+            #si le paramêtre 'settings' est une liste de groupe de paramêtre, on ajoute chacun des paramêtres de chaque groupe au paramêtres du composant
             elif type(self.settings["settings"]) == list:
                 for settingsGroup in self.settings["settings"]:
                     for key in settingsGroups[settingsGroup].keys():
@@ -166,8 +164,10 @@ class Page:
                         except:
                             self.settings[key] = settingsGroups[self.settings["settings"]][key]
 
+            #on suppirme le paramêtre 'settings'
             del self.settings["settings"]
 
+            #on ajoute tous les paramêtres présents dans les paramêtres définit dans la page
             for setting in additionalSettings.keys():
                 self.settings[setting] = additionalSettings[setting]
 
@@ -176,7 +176,7 @@ class Page:
             if not setting in self.settings.keys():
                 self.settings[setting] = defaults[setting]
 
-    def setEnvironnement(self, size):
+    def setContainer(self, size):
         self.containerSize = size
         self.containerPosition = [0, 0]
 
@@ -187,7 +187,6 @@ class Page:
 class Button(Page):
     def __init__(self, settings):
         self.settings = settings
-        self.widgets = {}
 
     def setup(self, additionalSettings = {}):
         self.globalSetup("Button", additionalSettings)
@@ -196,6 +195,7 @@ class Button(Page):
         position = convertPosition(self.settings["position"].copy(), self.containerPosition, self.containerSize)
         size = convertSize(self.settings["size"].copy(), self.containerSize)
 
+        pygame.draw.rect(screen, convertColor(self.settings["color"]), [position[0] - size[0] // 2, position[1] - size[1] // 2, size[0], size[1]], border_radius = self.settings["border-radius"])
         pygame.draw.rect(screen, convertColor(self.settings["color"]), [position[0] - size[0] // 2, position[1] - size[1] // 2, size[0], size[1]], self.settings["border-width"], self.settings["border-radius"])
         text = pygame.font.SysFont(self.settings["font"], self.settings["font-size"]).render(self.settings["text"], True, convertColor(self.settings["font-color"]))
         screen.blit(text, [position[0]  - text.get_width() // 2, position[1] - text.get_height() // 2])
