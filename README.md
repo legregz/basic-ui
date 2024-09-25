@@ -28,6 +28,7 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 >basic_ui.importConfigFiles()
 >```
 
+> [!NOTE]
 >The 'aliases.json' file contain that:
 >```json
 >{
@@ -40,6 +41,7 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 >}
 >```
 
+> [!NOTE]
 >The 'default.json' file contain that:
 >```json
 >{
