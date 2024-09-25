@@ -6,7 +6,8 @@
     "font": "Liberation Sans",
     "border-radius": 1,
     "border-width": 1,
-    "border-color": "f",
-    "size": ["90%", "90%"],
-    "position": ["50%", "50%"]
+    "border-color": "0",
+    "size": "auto",
+    "position": ["50%", "50%"],
+    "margin": 3
 }

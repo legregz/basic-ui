@@ -1,4 +1,16 @@
 {
-    "Button":["text", "font-size", "font-color", "font", "position", "color", "border-width", "border-color", "border-radius", "size"],
-    "Text":["text", "font-size", "font-color", "font", "position"]
+    "Button": [
+        "text",
+        "font-size",
+        "font-color",
+        "font",
+        "position",
+        "color",
+        "border-width",
+        "border-color",
+        "border-radius",
+        "size",
+        "margin"
+    ],
+    "Text": ["text", "font-size", "font-color", "font", "position"]
 }
