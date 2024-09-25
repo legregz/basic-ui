@@ -16,7 +16,7 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 1. Create your project directory
 
 2. In there, create your 'main.py' file where you will going import pygame and basic_ui.
->```
+>```python
 >import basic_ui, pygame
 >pygame.init()
 >
@@ -24,12 +24,12 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 >```
 
 3. The following line create a new directory called 'config' in your project directory and add in the 'aliases.json' and 'defaults.json' config files. If there is already these files and directory, they don't be changed.
->```
+>```python
 >basic_ui.importConfigFiles()
 >```
 
 >The 'aliases.json' file contain that:
->```
+>```json
 >{
 >    "red": "f00",
 >    "green": "0f0",
@@ -41,7 +41,7 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 >```
 
 >The 'default.json' file contain that:
->```
+>```json
 >{
 >    "color": "f",
 >    "text": "text",
@@ -60,7 +60,7 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 ## 2. Examples
 
 Example of code for elements.json file:
-> ```
+> ```json
 > {
 >    "homeButton": {
 >        "Button": {
