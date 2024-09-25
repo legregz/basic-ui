@@ -1,7 +1,7 @@
 # Basic UI
 ## Description
 
-basic_ui is a project of user interface using pygame and json files. The goal is to simplify the creation of app menus, and interfaces.
+Basic UI is a project of user interface using pygame and json files. The goal is to simplify the creation of app menus, and interfaces.
 
 > [!IMPORTANT]
 > To use basic_ui, you need to have a minimal level in usage of pygame.
@@ -42,7 +42,7 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 >```
 
 > [!NOTE]
->The 'default.json' file contain that:
+>The 'defaults.json' file contain that:
 >```json
 >{
 >    "color": "f",
