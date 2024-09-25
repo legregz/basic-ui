@@ -6,9 +6,8 @@ basic_ui is a project of user interface using pygame and json files. The goal is
 To use basic_ui, you need to have a minimal level in usage of pygame.
 
 ## Table of contents
-
-1. Preparation
-2. Examples
+    1. Preparation
+    2. Examples
 
 1. ### Preparation
     1. Create your project directory
