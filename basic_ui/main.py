@@ -110,62 +110,92 @@ def setElements(elementsFileName):
 	with open(elementsFileName) as f:
 		elements = json.load(f)
 
-	#pour chaque nom de élément parmis ceux dans le fichier
-	for elementName in elements.keys():
-		#pour chaque élément contenu dans le nom du composant
-		for elementClassName in elements[elementName].keys():
+	#pour chaque nom d'élément parmis ceux dans le fichier
+	for element in elements.keys():
+		if ":" in element:
+			#si l'élément contient le séparateur ":", récupère le nom de la classe et celui de l'élément
+			elementClassName, elementName = element.split(":")
+
 			try:
-				#vérifie si l'élément est un composant
+				#vérifie si le type de composant existe
 				eval(elementClassName)
-			except:
-				#sinon test si l'élément est une section. si oui, ajoute l'élément à la liste des sections
-				if elementClassName in elements.keys():
-					sections[elementName] = eval(f"Section({elements[elementName]})")
-				#ou un groupe de paramètres
-				else:
-					settingsGroups[elementName] = elements[elementName]
+
+			except Exception as e:
+				#renvoie une erreur sinon
+				print(f"{e} :\nLe composant {elementClassName} n'existe pas\n")
+
 			else:
-				#sinon créé un composant en évaluant la classe définit par elementClassName
-				components[elementName] = eval(f"{elementClassName}({elements[elementName][elementClassName]})")
+				if elementClassName == "Section":
+					#si l'élément est une Section, l'ajoute au dictionnaire 'sections'
+					sections[elementName] = eval(f"Section({elements[element]})")
+
+				else:
+					#sinon, ajoute l'élément au dictionnaire 'components'
+					components[elementName] = eval(f"{elementClassName}({elements[element]})")
+		else:
+			#sinon, ajoute le groupe de paramêtres au dictionnaire 'settingsGroups'
+			settingsGroups[element] = elements[element]
 
 class Section:
 	def __init__(self, elements):
-		pass
+		self.setElements(elements)
+
+	def setScreen(self, screen):
+		self.screen = screen
 
 	def setElements(self, elements):
 		self.components = {}
 		self.sections = {}
+		self.settings = {}
+		settings = {}
 		
+		#ouvrir le fichier contenant les composants
+		if  type(elements) == str:
+			with open(elements) as f:
+				elements = json.load(f)
 
-class Window(Section):
-	def __init__(self, screen, pageFileName):
-		with open(pageFileName) as f:
-			elements = json.load(f)
+		#pour chaque nom d'élément parmis ceux dans le fichier
+		for element in elements.keys():
+			if ":" in element:
+				#si l'élément contient le séparateur ":", récupère le nom de la classe et celui de l'élément
+				elementClassName, elementName = element.split(":")
 
-		self.components = {}
-		self.size = screen.get_size()
-		self.screen = screen
-
-		#pour tout les noms de composants de la page
-		for componentName in elements.keys():
-			try:
-				#test si c'est un composant
-				components[componentName]
-			except:
 				try:
-					#test si c'est une section
-					sections[componentName]
-				except:
-					pass
+					#vérifie si le type de composant existe
+					eval(elementClassName)
+
+				except Exception as e:
+					#renvoie une erreur sinon
+					print(f"{e} :\nLe composant {elementClassName} n'existe pas\n")
+
 				else:
-					#si oui, tout les composants de la section sont ajoutés aux composants de la page
-					for sectionComponentName in sections[componentName].keys():
-						self.components[componentName] = components[sectionComponentName]
+					if elementClassName == "Section":
+						#si l'élément est une Section, l'ajoute au dictionnaire 'sections'
+						self.sections[elementName] = eval(f"Section({elements[element]})")
+
+					else:
+						#sinon, ajoute l'élément au dictionnaire 'self.components'
+						self.components[elementName] = eval(f"{elementClassName}({elements[element]})")
+
 			else:
-				#si oui, setup de chaque composant
-				self.components[componentName] = components[componentName]
-				self.components[componentName].setup(elements[componentName])
-				self.components[componentName].setContainer(self.size)
+				if element in components.keys():
+					#si le composant est défini, l'ajoute au dictionnaire 'self.components'
+					self.components[element] = components[element]
+
+				else:
+					if element in requirements["Section"]:
+						#si c'est un paramêtre requis, l'ajoute au dictionnaire 'settings'
+						settings[element] = elements[element]
+
+					else:
+						#sinon renvoie une erreur
+						print(f"Le composant {element} n'est pas défini\n")
+
+		self.globalSetup("Section", settings)
+
+		for componentName in self.components:
+			self.components[componentName].setup()
+			self.components[componentName].setContainer(self)
 
 	def globalSetup(self, componentClassName, additionalSettings):
 		#vérifie si le paramêtre 'settings' existe
@@ -190,24 +220,28 @@ class Window(Section):
 			#on suppirme le paramêtre 'settings'
 			del self.settings["settings"]
 
-			#on ajoute tous les paramêtres présents dans les paramêtres définit dans la page
-			for setting in additionalSettings.keys():
-				self.settings[setting] = additionalSettings[setting]
+		#on ajoute tous les paramêtres présents dans les paramêtres définit dans la page
+		for setting in additionalSettings.keys():
+			self.settings[setting] = additionalSettings[setting]
 
 		#pour tout les paramêtres requis mais vides, on applique la valeur par défaut
 		for setting in requirements[componentClassName]:
 			if not setting in self.settings.keys():
 				self.settings[setting] = defaults[setting]
 
-	def setContainer(self, size):
-		self.containerSize = size
-		self.containerPosition = [0, 0]
+	def setContainer(self, container):
+		self.container = container
 
 	def show(self):
 		for componentName in self.components.keys():
 			self.components[componentName].showComponent(self.screen)
 
-class Button(Window):
+class Window(Section):
+	def __init__(self, pageFileName, screen):
+		self.setScreen(screen)
+		self.setElements(pageFileName)
+
+class Button(Section):
 	def __init__(self, settings):
 		self.settings = settings
 
@@ -215,7 +249,7 @@ class Button(Window):
 		self.globalSetup("Button", additionalSettings)
 
 	def showComponent(self, screen):
-		position = convertPosition(self.settings["position"].copy(), self.containerPosition, self.containerSize)
+		position = convertPosition(self.settings["position"].copy(), self.container.settings["position"], self.container.settings["size"])
 		text = pygame.font.SysFont(self.settings["font"], self.settings["font-size"]).render(self.settings["text"], True, convertColor(self.settings["font-color"]))
 		size = convertSize(self.settings["size"], self.containerSize, text.get_size())
 		size = list(map(adder(self.settings["margin"] * 2), size))
@@ -224,7 +258,7 @@ class Button(Window):
 		pygame.draw.rect(screen, convertColor(self.settings["border-color"]), [position[0] - size[0] // 2, position[1] - size[1] // 2, size[0], size[1]], self.settings["border-width"], self.settings["border-radius"])
 		screen.blit(text, [position[0]  - text.get_width() // 2, position[1] - text.get_height() // 2])
 
-class Text(Window):
+class Text(Section):
 	def __init__(self, settings):
 		self.settings = settings
 

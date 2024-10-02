@@ -1,16 +1,31 @@
 {
-    "Button": [
-        "text",
-        "font-size",
-        "font-color",
-        "font",
-        "position",
-        "color",
-        "border-width",
-        "border-color",
-        "border-radius",
-        "size",
-        "margin"
-    ],
-    "Text": ["text", "font-size", "font-color", "font", "position"]
+	"Button": [
+		"text",
+		"font-size",
+		"font-color",
+		"font",
+		"position",
+		"color",
+		"border-width",
+		"border-color",
+		"border-radius",
+		"size",
+		"margin"
+	],
+	"Section": [
+		"size",
+		"color",
+		"position",
+		"border-width",
+		"border-color",
+		"border-radius",
+		"margin"
+	],
+	"Text": [
+		"text",
+		"font-size",
+		"font-color",
+		"font",
+		"position"
+	]
 }
