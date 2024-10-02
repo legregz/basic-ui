@@ -1,4 +1,4 @@
-import pygame, json, os, importlib_resources
+import pygame, json, os, sys
 pygame.init()
 
 global defaults, aliases, requirements
@@ -20,14 +20,14 @@ def importConfigFiles():
 		with open("config/defaults.json") as f:
 			defaults = json.load(f)
 	except Exception:
-		with importlib_resources.open_text("basic_ui", "config/defaults.json") as f:
+		with open("basic_ui", sys.path("config/defaults.json")) as f:
 			defaults = json.load(f)
 
 		with open("config/defaults.json", "w") as f:
 			f.write(json.dumps(defaults, indent = 4))
 
 	#ouvre le fichier des paramètres requis pour chaque type de composant
-	with importlib_resources.open_text("basic_ui", "config/requirements.json") as f:
+	with open("basic_ui", sys.path("config/requirements.json")) as f:
 		requirements = json.load(f)
 
 	#ouvre le fichier des alias
@@ -35,7 +35,7 @@ def importConfigFiles():
 		with open("config/aliases.json") as f:
 			aliases = json.load(f)
 	except Exception:
-		with importlib_resources.open_text("basic_ui", "config/aliases.json") as f:
+		with open("basic_ui", sys.path("config/aliases.json")) as f:
 			aliases = json.load(f)
 
 		with open("config/aliases.json", "w") as f:
