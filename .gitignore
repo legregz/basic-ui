@@ -2,4 +2,3 @@ test
 dist
 build
 basic_ui.egg-info
-build.sh
