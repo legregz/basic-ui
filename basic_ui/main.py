@@ -41,7 +41,7 @@ def importConfigFiles():
 		with open("config/aliases.json", "w") as f:
 			f.write(json.dumps(aliases, indent = 4))
 
-def globalSetup(component, additionalSettings = {}):
+def setup(component, additionalSettings = {}):
 	#vérifie si le paramêtre 'settings' existe
 	if "settings" in component.settings.keys():
 		#si le paramêtre 'settings' est un groupe de paramêtres, on ajoute chacun des paramêtres aux paramêtres du composant
@@ -69,13 +69,16 @@ def globalSetup(component, additionalSettings = {}):
 		component.settings[setting] = additionalSettings[setting]
 
 	#pour tout les paramêtres requis mais vides, on applique la valeur par défaut
-	for setting in requirements[component.__name__]:
+	for setting in requirements[component.name]:
 		if not setting in component.settings.keys():
 			component.settings[setting] = defaults[setting]
 
+	component.size = Size(component)
+	component.position = Position(component)
+
 settingsGroups, components, sections = {}, {}, {}
 
-def setElements(elementsFileName):
+def defineElements(elementsFileName):
 	#ouvrir le fichier contenant les composants
 	with open(elementsFileName) as f:
 		elements = json.load(f)
@@ -108,12 +111,12 @@ def setElements(elementsFileName):
 
 class Section:
 	def __init__(self, elements):
-		self.setElements(elements)
-
-	def setScreen(self, screen):
-		self.screen = screen
+		self.name = "Section"
+		self.elements = elements
 
 	def setElements(self, elements):
+		self.screen = self.container.screen
+
 		self.components = {}
 		self.sections = {}
 		self.settings = {}
@@ -153,6 +156,10 @@ class Section:
 					#si le composant est défini, l'ajoute au dictionnaire 'self.components'
 					self.components[element] = components[element]
 
+				elif element in sections.keys():
+					#si le composant est défini et est une section, l'ajoute au dictionnaire 'self.sections'
+					self.sections[element] = sections[element]
+
 				else:
 					if element in requirements["Section"]:
 						#si c'est un paramêtre requis, l'ajoute au dictionnaire 'settings'
@@ -162,20 +169,39 @@ class Section:
 						#sinon renvoie une erreur
 						print(f"Le composant {element} n'est pas défini\n")
 
-		self.globalSetup("Section", settings)
+		setup(self, settings)
 
-		for componentName in self.components:
-			globalSetup(self.components[componentName])
-			self.components[componentName].setContainer(self)
+		for componentName in self.components.keys():
+			self.components[componentName].container = self
+			setup(self.components[componentName])
 
-	def setContainer(self, container):
-		self.container = container
+		for sectionName in self.sections.keys():
+			self.sections[sectionName].container = self
+			self.sections[sectionName].setElements(self.sections[sectionName].elements)
 
 	def show(self):
 		for componentName in self.components.keys():
-			self.components[componentName].showComponent(self.screen)
+			self.components[componentName].show()
+
+		for sectionName in self.sections.keys():
+			self.sections[sectionName].show()
 
 class Window(Section):
+	class Container:
+		def __init__(self, screen):
+			self.size = WindowSize([screen.get_width(), screen.get_height()])
+			self.position = WindowPosition([screen.get_width() / 2, screen.get_height() / 2])
+			self.screen = screen
+
 	def __init__(self, pageFileName, screen):
-		self.setScreen(screen)
+		self.name = "Section"
+		self.screen = screen
+
+		self.settings = {
+			"size":["100%", "100%"],
+			"position":["50%", "50%"]
+		}
+
+		self.container = self.Container(screen)
+
 		self.setElements(pageFileName)

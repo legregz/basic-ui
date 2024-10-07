@@ -1,17 +1,14 @@
 import pygame
 
-from utils import *
+from .utils import *
 
-class Text():
+class Text:
 	def __init__(self, settings):
 		self.settings = settings
+		self.name = "Text"
 
-	def showComponent(self, screen):
-		position = convertPosition(
-			self.settings["position"].copy(),
-			self.containerPosition,
-			self.containerSize
-		)
+	def show(self):
+		position = self.position.convert()
 
 		text = pygame.font.SysFont(
 			self.settings["font"],
@@ -22,4 +19,4 @@ class Text():
 			convertColor(self.settings["font-color"], self.aliases)
 		)
 
-		screen.blit(text, [position[0] - text.get_width() // 2, position[1] - text.get_height() // 2])
+		self.container.screen.blit(text, [position[0] - text.get_width() // 2, position[1] - text.get_height() // 2])
