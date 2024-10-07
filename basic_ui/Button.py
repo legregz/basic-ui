@@ -19,7 +19,7 @@ class Button():
 		).render(
 			self.settings["text"],
 			True,
-			self.convertColor(self.settings["font-color"])
+			convertColor(self.settings["font-color"], self.aliases)
 		)
 
 		size = convertSize(
@@ -32,7 +32,7 @@ class Button():
 
 		pygame.draw.rect(
 			screen,
-			self.convertColor(self.settings["color"]),
+			convertColor(self.settings["color"], self.aliases),
 			[position[0] - size[0] // 2, position[1] - size[1] // 2, size[0], size[1]],
 			border_radius = self.settings["border-radius"]
 		)

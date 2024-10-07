@@ -19,7 +19,7 @@ class Text():
 		).render(
 			self.settings["text"],
 			True,
-			self.convertColor(self.settings["font-color"])
+			convertColor(self.settings["font-color"], self.aliases)
 		)
 
 		screen.blit(text, [position[0] - text.get_width() // 2, position[1] - text.get_height() // 2])

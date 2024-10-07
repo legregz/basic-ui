@@ -41,18 +41,6 @@ def importConfigFiles():
 		with open("config/aliases.json", "w") as f:
 			f.write(json.dumps(aliases, indent = 4))
 
-def convertColor(color):
-	"""convertColor : fonction permettant de convertir une color depuis le format utilisé dans la page json en color RVB"""
-	if color in aliases.keys():
-		color = aliases[color]
-
-	if len(color) == 1:
-		color = color * 6
-	elif len(color) == 3:
-		color = color[0] * 2 + color[1] * 2 + color[2] * 2
-
-	return [int(f"0x{color[0:2]}", 16), int(f"0x{color[2:4]}", 16), int(f"0x{color[4:6]}", 16)]
-
 def globalSetup(component, additionalSettings = {}):
 	#vérifie si le paramêtre 'settings' existe
 	if "settings" in component.settings.keys():
@@ -158,6 +146,7 @@ class Section:
 					else:
 						#sinon, ajoute l'élément au dictionnaire 'self.components'
 						self.components[elementName] = eval(f"{elementClassName}({elements[element]})")
+						self.components[elementName].aliases = aliases
 
 			else:
 				if element in components.keys():

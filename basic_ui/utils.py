@@ -51,4 +51,16 @@ def convertSize(sizeArg, containerSize, autoSize = []):
 	else:
 		size = autoSize
 
-	return size
+	return 
+
+def convertColor(color, aliases):
+	"""convertColor : fonction permettant de convertir une color depuis le format utilisé dans la page json en color RVB"""
+	if color in aliases.keys():
+		color = aliases[color]
+
+	if len(color) == 1:
+		color = color * 6
+	elif len(color) == 3:
+		color = color[0] * 2 + color[1] * 2 + color[2] * 2
+
+	return [int(f"0x{color[0:2]}", 16), int(f"0x{color[2:4]}", 16), int(f"0x{color[4:6]}", 16)]
