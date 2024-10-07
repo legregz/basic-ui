@@ -106,7 +106,7 @@ class Size:
 			size = autoSize
 
 		return size
-	
+
 class Position:
 	def __init__(self, component):
 		self.position = component.settings["position"]
