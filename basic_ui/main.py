@@ -1,7 +1,7 @@
 import pygame, json, os
 
-from .Button import *
-from .Text import *
+from .button import *
+from .text import *
 from .utils import *
 
 pygame.init()
