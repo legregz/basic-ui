@@ -1,8 +1,8 @@
 import pygame
 
 from .widget import Widget
+from .label import Label
 
 class Button(Widget):
-	def __init__(self, settings) -> None:
-		self.settings = settings
-		self.name = "Button"
+	def null(self):
+		pass

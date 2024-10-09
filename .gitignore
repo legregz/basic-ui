@@ -4,4 +4,4 @@ build
 basic_ui.egg-info
 *.pyc
 __pyache__
-tests/
+old

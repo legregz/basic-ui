@@ -21,7 +21,7 @@
 		"border-radius",
 		"margin"
 	],
-	"Text": [
+	"Label": [
 		"text",
 		"font-size",
 		"font-color",
